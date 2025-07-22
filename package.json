@@ -1,0 +1,54 @@
+{
+  "name": "react-native-lastcrash",
+  "version": "0.1.0",
+  "description": "LastCrash SDK for React Native",
+  "homepage": "https://github.com/lastcrash/react-native-lastcrash",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lastcrash/react-native-lastcrash.git"
+  },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "test": "jest",
+    "lint": "eslint src --ext .ts,.tsx",
+    "clean": "rm -rf lib"
+  },
+  "keywords": [
+    "react-native",
+    "crash-reporting",
+    "screenshot",
+    "analytics",
+    "lastcrash"
+  ],
+  "author": "Ankit Desai",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-native": ">=0.60.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-native": "^0.70.0",
+    "typescript": "^4.9.0",
+    "jest": "^29.0.0",
+    "@types/jest": "^29.0.0",
+    "eslint": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0"
+  },
+  "dependencies": {
+    "react-native-fs": "^2.20.0",
+    "react-native-zip-archive": "^6.0.0",
+    "react-native-device-info": "^10.0.0",
+    "react-native-network-info": "^5.2.1"
+  },
+  "files": [
+    "lib/**/*",
+    "android/**/*",
+    "ios/**/*",
+    "react-native-lastcrash.podspec"
+  ]
+}
