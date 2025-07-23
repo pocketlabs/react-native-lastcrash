@@ -119,49 +119,6 @@ const App = () => {
 export default App;
 ```
 
-### Error Boundary Integration
-
-```typescript
-import React from 'react';
-import { View, Text } from 'react-native';
-import LastCrash from 'react-native-lastcrash';
-
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(error) {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    // Report error to LastCrash
-    // (implement JS error reporting if needed)
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text>Something went wrong.</Text>
-        </View>
-      );
-    }
-
-    return this.props.children;
-  }
-}
-
-// Wrap your app with the error boundary
-const AppWithErrorBoundary = () => (
-  <ErrorBoundary>
-    <App />
-  </ErrorBoundary>
-);
-```
-
 ## API Reference
 
 ### Methods
