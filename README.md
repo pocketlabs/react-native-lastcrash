@@ -1,5 +1,10 @@
 # React Native LastCrash SDK
 
+> **⚠️ Beta Notice:**
+> This SDK is currently in beta and intended for development use only. APIs may change before the stable release.
+> **Do not use in production applications.**
+> Version 1.0 is expected in August 2025. Please wait for the stable release before deploying to production applications.
+
 A React Native SDK for LastCrash - a comprehensive crash reporting and analytics solution that captures screenshots, monitors app state, and uploads crash reports with visual context.
 
 ## Features
@@ -114,49 +119,6 @@ const App = () => {
 export default App;
 ```
 
-### Error Boundary Integration
-
-```typescript
-import React from 'react';
-import { View, Text } from 'react-native';
-import LastCrash from 'react-native-lastcrash';
-
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(error) {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    // Report error to LastCrash
-    // (implement JS error reporting if needed)
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text>Something went wrong.</Text>
-        </View>
-      );
-    }
-
-    return this.props.children;
-  }
-}
-
-// Wrap your app with the error boundary
-const AppWithErrorBoundary = () => (
-  <ErrorBoundary>
-    <App />
-  </ErrorBoundary>
-);
-```
-
 ## API Reference
 
 ### Methods
@@ -226,141 +188,6 @@ DeviceEventEmitter.addListener('LastCrashDidCrash', (reports) => {
 - Then run `npx pod-install` again.
 - For Android, if autolinking does not work, add the project manually to `settings.gradle` and `build.gradle` as described in the React Native docs.
 
-### Debug Mode
-
-Enable logging to see detailed information (iOS only):
-
-```typescript
-LastCrash.enableLogging();
-```
-
-## Platform Differences
-
-### iOS
-- Uses KSCrash for native crash detection
-- Screenshot capture uses CADisplayLink for smooth performance
-- Network tracking uses custom NSURLProtocol
-
-### Android
-- Uses Android's native crash reporting
-- Screenshot capture uses ViewTreeObserver
-- Network tracking uses OkHttp interceptors
-
-## License
-
-MIT License - see LICENSE file for details.
-
 ## Support
 
 For support, please contact support@lastcrash.io or visit our documentation at https://docs.lastcrash.io.
-
----
---- REMOVE THIS BEFORE PUBLISHIING
----
-# 🛠️ Local Development & Testing for a React Native Package
-
-This guide explains how to test your React Native package locally before publishing to npm.
-
----
-
-## 1. Make Your Changes
-
-Edit your package code as needed.
-
----
-
-## 2. Build Your Package
-
-If you use TypeScript or a build step, run:
-
-```sh
-npm run build
-```
-
----
-
-## 3. Create a Tarball
-
-From your package directory, run:
-
-```sh
-npm pack
-```
-
-This will create a file like:
-
-react-native-lastcrash-1.0.0.tgz
-
-
----
-
-## 4. Install the Tarball in Your Test App
-
-From your test app directory, run:
-
-```sh
-npm install /absolute/path/to/react-native-lastcrash/react-native-lastcrash-1.0.0.tgz
-# or
-yarn add /absolute/path/to/react-native-lastcrash/react-native-lastcrash-1.0.0.tgz
-```
-
----
-
-## 5. Rebuild Your Test App
-
-- **iOS:**
-  ```sh
-  npx pod-install
-  ```
-- **Android:**
-  Just rebuild/restart the app.
-
----
-
-## 6. Repeat as Needed
-
-Each time you make changes to your package:
-
-1. `npm run build`
-2. `npm pack`
-3. Reinstall the new tarball in your test app
-4. Rebuild your test app
-
----
-
-## 📝 Alternative: Local Path Dependency
-
-In your test app’s `package.json`:
-
-```json
-"dependencies": {
-  "react-native-lastcrash": "file:../path/to/react-native-lastcrash"
-}
-```
-
-Then run:
-
-```sh
-npm install
-# or
-yarn install
-```
-
-> **Note:** You’ll need to rebuild and reinstall after changes, and this may not exactly match the published package.
-
----
-
-## ⚡️ Quick Reference Table
-
-| Step         | Command/Action                                              |
-|--------------|------------------------------------------------------------|
-| Build        | `npm run build`                                            |
-| Pack         | `npm pack`                                                 |
-| Install      | `npm install /abs/path/to/package-1.0.0.tgz`               |
-| iOS Rebuild  | `npx pod-install`                                          |
-| Android      | Rebuild/restart app                                        |
-
----
-
-**Tip:**
-Automate these steps with a script for faster iteration if you’re making lots of changes!

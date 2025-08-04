@@ -1,6 +1,6 @@
 {
   "name": "react-native-lastcrash",
-  "version": "0.1.0",
+  "version": "0.1.6",
   "description": "LastCrash SDK for React Native",
   "homepage": "https://github.com/lastcrash/react-native-lastcrash",
   "repository": {
@@ -39,12 +39,7 @@
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0"
   },
-  "dependencies": {
-    "react-native-fs": "^2.20.0",
-    "react-native-zip-archive": "^6.0.0",
-    "react-native-device-info": "^10.0.0",
-    "react-native-network-info": "^5.2.1"
-  },
+  "dependencies": {},
   "files": [
     "lib/**/*",
     "android/**/*",

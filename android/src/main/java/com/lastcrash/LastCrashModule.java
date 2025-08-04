@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.graphics.Rect;
 import android.app.Activity;
+import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
@@ -30,6 +31,19 @@ public class LastCrashModule extends ReactContextBaseJavaModule implements LastC
     private static final String MODULE_NAME = "LastCrashModule";
     private static boolean didUseDelegate = false;
 
+    /**
+     * Helper method to run LastCrash operations on the main thread
+     */
+    private void runOnMainThread(Runnable runnable) {
+        Activity currentActivity = reactContext.getCurrentActivity();
+        if (currentActivity != null) {
+            currentActivity.runOnUiThread(runnable);
+        } else {
+            // Fallback to main thread handler if no activity available
+            new android.os.Handler(android.os.Looper.getMainLooper()).post(runnable);
+        }
+    }
+
     public LastCrashModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
@@ -50,7 +64,12 @@ public class LastCrashModule extends ReactContextBaseJavaModule implements LastC
             // Get the current activity and pass it to LastCrash.configure
             Activity currentActivity = reactContext.getCurrentActivity();
             if (currentActivity != null) {
-                LastCrash.configure(apiKey, currentActivity);
+                runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        LastCrash.configure(apiKey, currentActivity);
+                    }
+                });
             } else {
                 System.err.println("Configure error: No current activity available");
             }
@@ -60,9 +79,14 @@ public class LastCrashModule extends ReactContextBaseJavaModule implements LastC
     }
 
     @ReactMethod
-    public void setCrashReportSenderDelegate() {
+    public void setCrashReportSenderListener() {
         if (!didUseDelegate) {
-            LastCrash.setCrashReportSenderListener(this);
+            runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    LastCrash.setCrashReportSenderListener(LastCrashModule.this);
+                }
+            });
             didUseDelegate = true;
         }
     }
@@ -86,27 +110,47 @@ public class LastCrashModule extends ReactContextBaseJavaModule implements LastC
 
     @ReactMethod
     public void pause() {
-        LastCrash.pause();
+        runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                LastCrash.pause();
+            }
+        });
     }
 
     @ReactMethod
     public void unpause() {
-        LastCrash.unpause();
+        runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                LastCrash.unpause();
+            }
+        });
     }
 
     @ReactMethod
     public void sendCrashes() {
-        LastCrash.sendCrashes();
+        runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                LastCrash.sendCrashes();
+            }
+        });
     }
 
     @ReactMethod
     public void event(String name, String value) {
         try {
-            if (value != null && !value.isEmpty()) {
-                LastCrash.event(name, value);
-            } else {
-                LastCrash.event(name);
-            }
+            runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (value != null && !value.isEmpty()) {
+                        LastCrash.event(name, value);
+                    } else {
+                        LastCrash.event(name);
+                    }
+                }
+            });
         } catch (Exception e) {
             System.err.println("Event tracking error: " + e.getMessage());
         }
@@ -114,12 +158,22 @@ public class LastCrashModule extends ReactContextBaseJavaModule implements LastC
 
     @ReactMethod
     public void applicationInitialized() {
-        LastCrash.applicationInitialized();
+        runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                LastCrash.applicationInitialized();
+            }
+        });
     }
 
     @ReactMethod
     public void applicationForceTermination() {
-        LastCrash.applicationForceTermination();
+        runOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                LastCrash.applicationForceTermination();
+            }
+        });
     }
 
     @ReactMethod
@@ -142,8 +196,13 @@ public class LastCrashModule extends ReactContextBaseJavaModule implements LastC
     @ReactMethod
     public void addMaskRect(double x, double y, double width, double height, String maskId) {
         try {
-            Rect rect = new Rect((int)x, (int)y, (int)(x + width), (int)(y + height));
-            LastCrash.addMaskRect(maskId, rect);
+            runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    Rect rect = new Rect((int)x, (int)y, (int)(x + width), (int)(y + height));
+                    LastCrash.addMaskRect(maskId, rect);
+                }
+            });
         } catch (Exception e) {
             System.err.println("Add mask rect error: " + e.getMessage());
         }
@@ -152,7 +211,12 @@ public class LastCrashModule extends ReactContextBaseJavaModule implements LastC
     @ReactMethod
     public void removeMaskRect(String maskId) {
         try {
-            LastCrash.removeMaskRect(maskId);
+            runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    LastCrash.removeMaskRect(maskId);
+                }
+            });
         } catch (Exception e) {
             System.err.println("Remove mask rect error: " + e.getMessage());
         }
@@ -161,7 +225,12 @@ public class LastCrashModule extends ReactContextBaseJavaModule implements LastC
     @ReactMethod
     public void removeAllMaskRects() {
         try {
-            LastCrash.removeAllMaskRects();
+            runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    LastCrash.removeAllMaskRects();
+                }
+            });
         } catch (Exception e) {
             System.err.println("Remove all mask rects error: " + e.getMessage());
         }
@@ -172,10 +241,13 @@ public class LastCrashModule extends ReactContextBaseJavaModule implements LastC
         try {
             View view = reactContext.getCurrentActivity().findViewById(viewTag);
             if (view != null) {
-                LastCrash.addMaskView(view);
-                System.out.println("Mask view added: " + view);
+                runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        LastCrash.addMaskView(view);
+                    }
+                });
             } else {
-                System.out.println("Mask view not found for tag: " + viewTag);
             }
         } catch (Exception e) {
             System.err.println("Add mask view error: " + e.getMessage());
@@ -187,10 +259,13 @@ public class LastCrashModule extends ReactContextBaseJavaModule implements LastC
         try {
             View view = reactContext.getCurrentActivity().findViewById(viewTag);
             if (view != null) {
-                LastCrash.removeMaskView(view);
-                System.out.println("Mask view removed: " + view);
+                runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        LastCrash.removeMaskView(view);
+                    }
+                });
             } else {
-                System.out.println("Mask view not found for tag: " + viewTag);
             }
         } catch (Exception e) {
             System.err.println("Remove mask view error: " + e.getMessage());
@@ -200,7 +275,12 @@ public class LastCrashModule extends ReactContextBaseJavaModule implements LastC
     @ReactMethod
     public void removeAllMaskViews() {
         try {
-            LastCrash.removeAllMaskViews();
+            runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    LastCrash.removeAllMaskViews();
+                }
+            });
         } catch (Exception e) {
             System.err.println("Remove all mask views error: " + e.getMessage());
         }

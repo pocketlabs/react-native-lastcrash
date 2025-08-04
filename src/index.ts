@@ -1,10 +1,8 @@
-import { NativeModules } from 'react-native';
+import { DeviceEventEmitter, NativeModules, NativeEventEmitter, Platform } from 'react-native';
 
 const { LastCrashModule } = NativeModules;
 
 class LastCrashNative {
-  public isInitialized = false;
-
   /**
    * Initialize the native LastCrash module
    */
@@ -12,7 +10,6 @@ class LastCrashNative {
     if (LastCrashModule) {
       try {
         LastCrashModule.configure(apiKey);
-        this.isInitialized = true;
       } catch (error) {
         console.error('Failed to configure LastCrash:', error);
         throw error;
@@ -23,9 +20,16 @@ class LastCrashNative {
   /**
    * Set the crash report sender delegate
    */
-  public setCrashReportSenderDelegate(): void {
-    if (this.isInitialized) {
-      LastCrashModule.setCrashReportSenderDelegate();
+  public setCrashReportSenderListener(callback: () => void): void {
+    if (LastCrashModule) {
+      if (Platform.OS === 'ios') {
+        LastCrashModule.setCrashReportSenderDelegate();
+        const eventEmitter = new NativeEventEmitter(LastCrashModule);
+        eventEmitter.addListener('LastCrashDidCrash', callback);
+      } else {
+        LastCrashModule.setCrashReportSenderListener();
+        DeviceEventEmitter.addListener('LastCrashDidCrash', callback);
+      }
     }
   }
 
@@ -33,7 +37,7 @@ class LastCrashNative {
    * Enable logging
    */
   public enableLogging(): void {
-    if (this.isInitialized) {
+    if (LastCrashModule) {
       LastCrashModule.enableLogging();
     }
   }
@@ -42,7 +46,7 @@ class LastCrashNative {
    * Disable logging
    */
   public disableLogging(): void {
-    if (this.isInitialized) {
+    if (LastCrashModule) {
       LastCrashModule.disableLogging();
     }
   }
@@ -51,7 +55,7 @@ class LastCrashNative {
    * Pause LastCrash
    */
   public pause(): void {
-    if (this.isInitialized) {
+    if (LastCrashModule) {
       LastCrashModule.pause();
     }
   }
@@ -60,7 +64,7 @@ class LastCrashNative {
    * Unpause LastCrash
    */
   public unpause(): void {
-    if (this.isInitialized) {
+    if (LastCrashModule) {
       LastCrashModule.unpause();
     }
   }
@@ -69,7 +73,7 @@ class LastCrashNative {
    * Send crashes
    */
   public sendCrashes(): void {
-    if (this.isInitialized) {
+    if (LastCrashModule) {
       LastCrashModule.sendCrashes();
     }
   }
@@ -78,7 +82,7 @@ class LastCrashNative {
    * Track event
    */
   public event(name: string, value?: string): void {
-    if (this.isInitialized) {
+    if (LastCrashModule) {
       LastCrashModule.event(name, value);
     }
   }
@@ -87,7 +91,7 @@ class LastCrashNative {
    * Mark application as initialized
    */
   public applicationInitialized(): void {
-    if (this.isInitialized) {
+    if (LastCrashModule) {
       LastCrashModule.applicationInitialized();
     }
   }
@@ -96,7 +100,7 @@ class LastCrashNative {
    * Add network tracking
    */
   public addNetworkTrackingToDefaultSession(): void {
-    if (this.isInitialized) {
+    if (LastCrashModule) {
       LastCrashModule.addNetworkTrackingToDefaultSession();
     }
   }
@@ -105,7 +109,7 @@ class LastCrashNative {
    * Add mask view for LastCrash
    */
   public addMaskView(viewTag: number): void {
-    if (this.isInitialized) {
+    if (LastCrashModule) {
       LastCrashModule.addMaskView(viewTag);
     }
   }
@@ -114,7 +118,7 @@ class LastCrashNative {
    * Remove mask view for LastCrash
    */
   public removeMaskView(viewTag: number): void {
-    if (this.isInitialized) {
+    if (LastCrashModule) {
       LastCrashModule.removeMaskView(viewTag);
     }
   }
@@ -123,7 +127,7 @@ class LastCrashNative {
    * Remove all mask views for LastCrash
    */
   public removeAllMaskViews(): void {
-    if (this.isInitialized) {
+    if (LastCrashModule) {
       LastCrashModule.removeAllMaskViews();
     }
   }
@@ -132,7 +136,7 @@ class LastCrashNative {
    * Add mask rect for LastCrash
    */
   public addMaskRect(x: number, y: number, width: number, height: number, maskId: string): void {
-    if (this.isInitialized) {
+    if (LastCrashModule) {
       LastCrashModule.addMaskRect(x, y, width, height, maskId);
     }
   }
@@ -141,7 +145,7 @@ class LastCrashNative {
    * Remove mask rect for LastCrash
    */
   public removeMaskRect(maskId: string): void {
-    if (this.isInitialized) {
+    if (LastCrashModule) {
       LastCrashModule.removeMaskRect(maskId);
     }
   }
@@ -150,7 +154,7 @@ class LastCrashNative {
    * Remove all mask rects for LastCrash
    */
   public removeAllMaskRects(): void {
-    if (this.isInitialized) {
+    if (LastCrashModule) {
       LastCrashModule.removeAllMaskRects();
     }
   }
