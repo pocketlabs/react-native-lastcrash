@@ -37,7 +37,7 @@ dependencies {
     implementation 'com.facebook.react:react-native:+'
 
     // LastCrash Android SDK
-    implementation 'io.lastcrash:lastcrash-android:2.0.0'
+    implementation 'io.lastcrash:lastcrash-android:2.0.1'
 
     // Basic Android dependencies
     implementation 'androidx.annotation:annotation:1.8.0'
