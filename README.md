@@ -1,10 +1,5 @@
 # React Native LastCrash SDK
 
-> **⚠️ Beta Notice:**
-> This SDK is currently in beta and intended for development use only. APIs may change before the stable release.
-> **Do not use in production applications.**
-> Version 1.0 is expected in August 2025. Please wait for the stable release before deploying to production applications.
-
 A React Native SDK for LastCrash - a comprehensive crash reporting and analytics solution that captures screenshots, monitors app state, and uploads crash reports with visual context.
 
 ## Features

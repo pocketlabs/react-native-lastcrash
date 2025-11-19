@@ -1,6 +1,6 @@
 {
   "name": "react-native-lastcrash",
-  "version": "0.1.8",
+  "version": "1.0.0",
   "description": "LastCrash SDK for React Native",
   "homepage": "https://github.com/lastcrash/react-native-lastcrash",
   "repository": {
